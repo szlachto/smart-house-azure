@@ -9,8 +9,10 @@ import java.util.List;
 import com.microsoft.azure.iothub.DeviceClient;
 import com.microsoft.azure.iothub.IotHubClientProtocol;
 import com.microsoft.azure.iothub.IotHubEventCallback;
+import com.microsoft.azure.iothub.IotHubMessageResult;
 import com.microsoft.azure.iothub.IotHubStatusCode;
 import com.microsoft.azure.iothub.Message;
+import com.microsoft.azure.iothub.MessageProperty;
 
 /**
  * Hello world!
@@ -68,7 +70,7 @@ public class App {
 
                 DeviceClient client;
                 client = new DeviceClient(App.connString, App.protocol);
-                client.open();
+                client.open();          
 
 
                 while (--index > 0) {
@@ -80,13 +82,16 @@ public class App {
                     System.out.println(msgFogger);
 
                     Object lockobj = new Object();
-                    EventCallback callback = new EventCallback();
-                    client.sendEventAsync(msg, callback, lockobj);
-
+                    EventCallback callback = new EventCallback();                    
+                    client.sendEventAsync(msg, callback, lockobj);     
+                    
+                    MessageCallback messageCallback = new MessageCallback();
+                    Counter counter = new Counter(0);
+                    client.setMessageCallback(messageCallback, counter);
                     synchronized (lockobj) {
                         lockobj.wait();
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 }
                 client.close();
             } catch (Exception e) {
@@ -94,4 +99,77 @@ public class App {
             }
         }
     }
+    
+    /** Used as a counter in the message callback. */
+    protected static class Counter
+    {
+        protected int num;
+
+        public Counter(int num)
+        {
+            this.num = num;
+        }
+
+        public int get()
+        {
+            return this.num;
+        }
+
+        public void increment()
+        {
+            this.num++;
+        }
+
+        @Override
+        public String toString()
+        {
+            return Integer.toString(this.num);
+        }
+    }
+
+    protected static class MessageCallback implements com.microsoft.azure.iothub.MessageCallback
+    {
+    	private int acPower = 0;
+    	
+        public IotHubMessageResult execute(Message msg, Object context)
+        {
+        	MessageProperty[] messageProperty = msg.getProperties();
+        	acPower = new Integer(messageProperty[0].getValue().toString());
+        	
+        	
+        	Counter counter = (Counter) context;
+            System.out.println(
+                    "Received message " + counter.toString()
+                            + " with content: "+ messageProperty[0].getName().toString() + new String(msg.getBytes(), Message.DEFAULT_IOTHUB_MESSAGE_CHARSET));
+
+            int switchVal = counter.get() % 3;
+            IotHubMessageResult res;
+            switch (switchVal)
+            {
+                case 0:
+                    res = IotHubMessageResult.COMPLETE;
+                    break;
+                case 1:
+                    res = IotHubMessageResult.ABANDON;
+                    break;
+                case 2:
+                    res = IotHubMessageResult.REJECT;
+                    break;
+                default:
+                    // should never happen.
+                    throw new IllegalStateException("Invalid message result specified.");
+            }
+
+            System.out.println("Responding to message " + counter.toString() + " with " + res.name());
+
+            counter.increment();
+
+            return res;
+        }
+        
+        public int getPower(){
+        	return this.acPower;
+        }
+    } 
 }
+
