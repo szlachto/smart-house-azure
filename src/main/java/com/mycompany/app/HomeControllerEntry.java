@@ -1,25 +1,57 @@
 package com.mycompany.app;
 
-import java.util.Date;
 
 public class HomeControllerEntry {
 
-    private Date timestamp;
-    private Integer temperature;
+    private String timestamp;
+    private Double internalTemperature;
     private Integer powerConsumption;
     private boolean peoplePresent = true;
+    private Double externalTemperature;
 
-    public HomeControllerEntry(final Integer temperature, final Integer powerConsumption, final boolean peoplePresent) {
-        this.timestamp = new Date();
-        this.temperature = temperature;
+    public HomeControllerEntry(final String timeStamp, final Double temperature, final Double extTemperature,
+        final Integer powerConsumption, final boolean peoplePresent) {
+        this.timestamp = timeStamp;
+        this.internalTemperature = temperature;
+        this.externalTemperature = extTemperature;
         this.powerConsumption = powerConsumption;
         this.peoplePresent = peoplePresent;
     }
 
     /**
+     * @return the internalTemperature
+     */
+    public Double getInternalTemperature() {
+        return this.internalTemperature;
+    }
+
+    /**
+     * @param internalTemperature
+     *            the internalTemperature to set
+     */
+    public void setInternalTemperature(final Double internalTemperature) {
+        this.internalTemperature = internalTemperature;
+    }
+
+    /**
+     * @return the externalTemperature
+     */
+    public Double getExternalTemperature() {
+        return this.externalTemperature;
+    }
+
+    /**
+     * @param externalTemperature
+     *            the externalTemperature to set
+     */
+    public void setExternalTemperature(final Double externalTemperature) {
+        this.externalTemperature = externalTemperature;
+    }
+
+    /**
      * @return the timestamp
      */
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return this.timestamp;
     }
 
@@ -27,23 +59,23 @@ public class HomeControllerEntry {
      * @param timestamp
      *            the timestamp to set
      */
-    public void setTimestamp(final Date timestamp) {
+    public void setTimestamp(final String timestamp) {
         this.timestamp = timestamp;
     }
 
     /**
      * @return the temperature
      */
-    public Integer getTemperature() {
-        return this.temperature;
+    public Double getTemperature() {
+        return this.internalTemperature;
     }
 
     /**
      * @param temperature
      *            the temperature to set
      */
-    public void setTemperature(final Integer temperature) {
-        this.temperature = temperature;
+    public void setTemperature(final Double temperature) {
+        this.internalTemperature = temperature;
     }
 
     /**

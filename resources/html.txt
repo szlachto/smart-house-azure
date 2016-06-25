@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+   
+<script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.min.js"></script>
+
+<meta name="viewport" content="initial-scale = 1, user-scalable = no" />
+    <style>
+			canvas{
+			}
+		</style>
+  </head>
+
+  <body>
+    <canvas id="canvas" height="450" width="600"></canvas>
+    <script>
+
+	data = {
+            labels: ['Item 1', 'Item 2', 'Item 3'],
+            datasets: [{
+                data: [10, 20, 30]
+            },{
+                data: [25, 10, 30]
+            }]
+        }
+
+	var myLineChart = new Chart(document.getElementById('canvas').getContext('2d') , {
+    type: 'line',
+    data: data
+});
+
+function updateData(dataSet, newValue){
+	for (var i = 0; i < myLineChart.data.datasets[dataSet].data.length-1; ++i){
+		myLineChart.data.datasets[dataSet].data[i] = myLineChart.data.datasets[dataSet].data[i + 1]; 
+		
+	}
+	myLineChart.data.datasets[dataSet].data[myLineChart.data.datasets[dataSet].data.length - 1] = newValue;
+}
+
+var value1 = 16;
+var value2 = 1;
+function test(){
+	
+	updateData(0, --value1);
+	updateData(1, ++value2);
+	myLineChart.update();
+	setTimeout(test, 1000);
+}
+
+test();
+	
+	</script>
+  </body>
+
+</html>

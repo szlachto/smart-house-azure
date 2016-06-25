@@ -45,6 +45,26 @@ public class App {
         }
     }
 
+    private static int getPowerConsumption(final int acMode) {
+        return 5_000 * acMode;
+    }
+
+    // 3 s -> 30 min
+    private static double getTemperature(final double currentTemperature, final int acMode) {
+        double result = currentTemperature - acMode * 0.5
+            + (App.getExternalTemperature() > App.internalTemperature ? App.getExternalTemperature() / 40 : 0);
+        return result >= 16 ? result : 16;
+    }
+
+    private static double getExternalTemperature() {
+        return 35;
+    }
+
+    private static double internalTemperature = 36;
+    private static int acMode = 2;
+
+    private static long dayTime = 0;
+
     private static class MessageSender implements Runnable {
         public volatile boolean stopThread = false;
         // private InputStream input;
@@ -53,27 +73,22 @@ public class App {
         public void run() {
             try {
 
-                // this.input = new
-                // FileInputStream("resources/entityAzure.json");
                 ReadEntity jsonUtility = new ReadEntity();
-                // this.entries = jsonUtility.readJsonStream(this.input);
 
                 this.entries = new ArrayList<HomeControllerEntry>();
 
-                int index = 0;
-                for (int i = 15; i < 36; ++i) {
-                    this.entries.add(new HomeControllerEntry(i, i * i * 10, !(i < 30)));
-                    ++index;
-                }
 
                 DeviceClient client;
                 client = new DeviceClient(App.connString, App.protocol);
                 client.open();
 
 
-                while (--index > 0) {
+                while (!this.stopThread) {
 
-                    String msgFogger = jsonUtility.serialize(Arrays.asList(this.entries.get(index)));
+                    String msgFogger = jsonUtility.serialize(Arrays.asList(new HomeControllerEntry(getDateTimeAsString(),
+                        App.internalTemperature, getExternalTemperature(), getPowerConsumption(App.acMode), true)));
+                    App.internalTemperature = getTemperature(App.internalTemperature, App.acMode);
+                    App.dayTime = (App.dayTime + 30) % (24 * 60);
 
                     Message msg = new Message(msgFogger);
 
@@ -81,17 +96,29 @@ public class App {
 
                     Object lockobj = new Object();
                     EventCallback callback = new EventCallback();
-                    client.sendEventAsync(msg, callback, lockobj);
+                    // client.sendEventAsync(msg, callback, lockobj);
 
                     synchronized (lockobj) {
-                        lockobj.wait();
+                        // lockobj.wait();
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 }
                 client.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        /**
+         * <p>
+         * <b> TODO : Insert description of the method's responsibility/role.
+         * </b>
+         * </p>
+         * 
+         * @return
+         */
+        private String getDateTimeAsString() {
+            return "" + String.format("%02d", App.dayTime / 60) + ":" + String.format("%02d", App.dayTime % 60);
         }
     }
 }
