@@ -1,0 +1,64 @@
+{
+	"entity": "SMPV-000001-001-002",
+	"fields": {
+		"SMPV_num": 2,
+		"String_num": 1,
+		"timestamp": "0001-01-01T00:00:00Z",
+		"measurements": {
+			"E": 1.863322,
+			"Ich": {
+				"v": 7.671,
+				"q": 192
+			},
+			"Kch": {
+				"v": 1,
+				"q": 192
+			},
+			"Pch": {
+				"v": 224.799,
+				"q": 192
+			},
+			"Temp": {
+				"v": 31.99,
+				"q": 192
+			},
+			"Uch": {
+				"v": 29.31,
+				"q": 192
+			}
+		},
+		"configuration": {
+			"PV_Vmpp": 0,
+			"PV_impp": 0,
+			"PV_manuf_year": "",
+			"PV_manufacturer": "",
+			"PV_max_power": 0,
+			"PV_model": "",
+			"PV_ocprot": 0,
+			"PV_ocv": 0,
+			"PV_sci": 0,
+			"PV_serial": "",
+			"Tch": 0,
+			"Ts": 0,
+			"calibr_date": "0001-01-01T00:00:00Z",
+			"device_function": 0,
+			"device_uid": 0,
+			"dsp_version": "",
+			"geo_pos": null,
+			"hardw_version": "",
+			"iGT_id_SMPV": "SMPV-000001-001-002",
+			"iGT_id_string": "STRING-000001-001",
+			"iGT_id_inv": "INV-000001",
+			"iGT_id_farm": "FARM-BB0",
+			"install_date": "0001-01-01T00:00:00Z",
+			"key_conf": 0,
+			"rf_channel": 0,
+			"softw_c_time": "0001-01-01T00:00:00Z",
+			"softw_version": "",
+			"subnet_id": 0,
+			"subnet_name": ""
+		}
+	},
+	"timestamp": "2016-06-17T11:26:02.996922Z",
+	"parent": null
+}

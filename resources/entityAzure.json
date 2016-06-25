@@ -1,0 +1,1 @@
+[{"entity":"SMPV-000001-001-006","fields":{"SMPV_num":6,"String_num":1,"measurements":{"E":10.0,"Ich":{"v":0.005,"q":192},"Kch":{"v":1.0,"q":192},"Pch":{"v":0.177,"q":192},"Temp":{"v":23.12,"q":192},"Uch":{"v":35.6,"q":192}}},"tags":{"type":"smpv"}}]
